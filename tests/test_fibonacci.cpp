@@ -44,8 +44,3 @@ TEST(FibonacciTest, HandlesRange3To29) {
             << "Failed at n = " << n;
     }
 }
-
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
