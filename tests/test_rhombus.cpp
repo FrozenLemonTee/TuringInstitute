@@ -11,6 +11,8 @@ TEST(RhombusTest, TestSmallRhombus) {
     std::vector<std::string> expected = {
             "*",
             "***",
+            "*****",
+            "***",
             "*"
     };
 
@@ -26,6 +28,10 @@ TEST(RhombusTest, TestMediumRhombus) {
     std::vector<std::string> expected = {
             "*",
             "***",
+            "*****",
+            "*******",
+            "*********",
+            "*******",
             "*****",
             "***",
             "*"

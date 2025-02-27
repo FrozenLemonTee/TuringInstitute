@@ -6,7 +6,6 @@
 #define TURINGINSTITUTE_RHOMBUS_H
 
 #include <vector>
-#include <wsman.h>
 #include "string"
 
 class rhombus{
