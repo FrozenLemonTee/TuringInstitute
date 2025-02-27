@@ -12,7 +12,7 @@ class avgAge{
 public:
     explicit avgAge(std::istream& ipt);
 
-    std::string eval() const;
+    [[nodiscard]] std::string eval() const;
 };
 
 #endif //TURINGINSTITUTE_AVGAGE_H
