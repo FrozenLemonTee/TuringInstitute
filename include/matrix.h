@@ -17,6 +17,8 @@ public:
     [[nodiscard]] std::vector<std::vector<int>> getMatrix() const;
 
     [[nodiscard]] std::vector<std::vector<int>> rotateView() const;
+
+    [[nodiscard]] std::vector<std::vector<int>> transpositionView() const;
 };
 
 #endif //MATRIX_H

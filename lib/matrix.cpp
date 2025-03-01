@@ -40,3 +40,17 @@ std::vector<std::vector<int>> matrix::rotateView() const
     }
     return res;
 }
+
+std::vector<std::vector<int>> matrix::transpositionView() const
+{
+    std::vector<std::vector<int>> res(this->length);
+    for (int i = 0; i < this->length; ++i)
+    {
+        res[i] = std::vector<int>(this->length);
+        for (int j = 0; j < this->length; ++j)
+        {
+            res[i][j] = this->m[j][i];
+        }
+    }
+    return res;
+}

@@ -40,3 +40,13 @@ TEST_F(MatrixTest, RotateViewTest) {
     };
     EXPECT_EQ(testMatrix->rotateView(), expected);  // 旋转后的矩阵应该是预期的结果
 }
+
+// 测试 transpositionView 方法是否正确执行矩阵转置
+TEST_F(MatrixTest, TranspositionViewTest) {
+    const std::vector<std::vector<int>> expected = {
+        {1, 4, 7},
+        {2, 5, 8},
+        {3, 6, 9}
+    };
+    EXPECT_EQ(testMatrix->transpositionView(), expected);
+}
