@@ -94,6 +94,14 @@ int isWin(int x, int y);
  * */
 int isWinImpl(int x, int y, int dx, int dy, int side);
 
+/* 新增函数
+ * 功能：判断是否平局，即棋盘所有位置是否均落子
+ * 返回值:
+ *      0表示没有达到平局条件
+ *      1表示达到平局条件
+ * */
+bool isDraw();
+
 /*
     负责人: 张三
     功能: playerMove: 在指定位置落子
@@ -138,6 +146,14 @@ void gameView_ShowMap();
     返回值: void
 */
 void winView();
+
+/*
+    新增函数。
+    功能: drawView:  打印游戏平局界面  用户可以按任意键回到主菜单
+    参数: void
+    返回值: void
+*/
+void drawView();
 
 /*
     *难点2

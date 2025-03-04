@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "iostream"
 #include <cstdlib>
-#include "../include/gobang.h"
+#include "gobang.h"
 
 // 定义平台相关信息
 #ifdef _WIN32
@@ -60,8 +60,20 @@ bool getSide() {
 void getCords() {
     std::string s;
     for (auto& cur_cord : cur_cords) {
-        std::cin >> s;
-        cur_cord = std::stoi(s);
+        while (true) {
+            try {
+                std::cin >> s;
+                cur_cord = std::stoi(s);
+                break;
+            } catch (const std::invalid_argument&) {
+                std::cin.clear(); // 清除错误状态
+                system(CLEAR_COMMAND);
+                gameView_ShowMap();
+                std::cout << (getSide() == 0 ? "Black" : "White") << "'s turn! " << std::endl;
+                std::cout << "Invalid input! Not a number! " << std::endl;
+                std::cout << "Please enter the coordinates of the drop (split the two coordinate components with a space):" << std::endl;
+            }
+        }
     }
 }
 
@@ -85,6 +97,10 @@ int isWinImpl(int x, int y, int dx, int dy, int side) {
         }
     }
     return 0;
+}
+
+bool isDraw(){
+    return flag == 19 * 19;
 }
 
 int playerMove(int x, int y){
@@ -152,13 +168,19 @@ void winView(){
     std::cout << (isWin(cur_cords[0], cur_cords[1]) == 1 ? "Black" : "White") << " wins! Press any key to return to the main menu......";
 }
 
+void drawView(){
+    system(CLEAR_COMMAND);
+    gameView_ShowMap();
+    std::cout << "Game over and no one wins! Press any key to return to the main menu......";
+}
+
 void gameView(){
     init();
     while (true){
         system(CLEAR_COMMAND);
         gameView_ShowMap();
         std::cout << (getSide() == 0 ? "Black" : "White") << "\'s turn! " << std::endl;
-        std::cout << "Please enter the coordinates of the drop (split the two coordinate components with a space):" ;
+        std::cout << "Please enter the coordinates of the drop (split the two coordinate components with a space):" << std::endl;
         getCords();
         while (!validCord(cur_cords[0]) ||
                !validCord(cur_cords[1]) ||
@@ -166,7 +188,8 @@ void gameView(){
             system(CLEAR_COMMAND);
             gameView_ShowMap();
             std::cout << (getSide() == 0 ? "Black" : "White") << "\'s turn! " << std::endl;
-            std::cout << "The drop is invalid! Please enter the coordinates of the drop (split the two coordinate components with a space):" ;
+            std::cout << "Can not drop it at (" << cur_cords[0] << ", " << cur_cords[1] << ") !" << std::endl;
+            std::cout << "Please enter the coordinates of the drop (split the two coordinate components with a space):" << std::endl;
             getCords();
         }
         if (isWin(cur_cords[0], cur_cords[1])){
@@ -176,6 +199,10 @@ void gameView(){
                 break;
         }
         flag += 1;
+        if (isDraw()){
+            drawView();
+            break;
+        }
     }
 }
 
