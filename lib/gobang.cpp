@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "iostream"
 #include <cstdlib>
-#include "gobang.h"
+#include "../include/gobang.h"
 
 // 定义平台相关信息
 #ifdef _WIN32
@@ -31,11 +31,14 @@
     }
 #endif
 
-int main()
-{
-    menuView();
-    return 0;
-}
+#define UP_KEY 72   // 上箭头
+#define DOWN_KEY 80 // 下箭头
+
+int map[19][19];
+
+int flag;
+
+int cur_cords[2];
 
 void init(){
     for (auto& i : map){
@@ -93,23 +96,60 @@ int playerMove(int x, int y){
 }
 
 void menuView(){
-    // todo
+    std::string choices[] = {"Game Start", "Settings", "Exit"};
+    int choice_count = sizeof(choices) / sizeof(choices[0]);
+    int highlight = 0;
+    char ch;
+    while (true){
+        system(CLEAR_COMMAND);
+        std::cout << "\n==== Gobang 1.0 by FrozenLemonTee ====\n";
+        for (int i = 0; i < choice_count; ++i) {
+            if (i == highlight)
+                std::cout << "> " << choices[i] << " <\n";
+            else
+                std::cout << "  " << choices[i] << "\n";
+        }
+        std::cout << "\n======================================\n";
+
+        ch = getChar();
+        if (ch == 'w' || ch == UP_KEY) {
+            highlight = (highlight - 1 + choice_count) % choice_count;
+        } else if (ch == 's' || ch == DOWN_KEY) {
+            highlight = (highlight + 1) % choice_count;
+        } else if (ch == '\n' || ch == '\r') { // 处理 Enter 键
+            if (highlight == 0) {
+                gameView();
+            } else if (highlight == 1) {
+                system(CLEAR_COMMAND);
+                std::cout << "\nComing soon! Press any key to return...\n";
+                getChar();
+            } else if (highlight == 2) {
+                exit(0);
+            }
+        }
+    }
 }
 
 void gameView_ShowMap(){
-    std::string elements[] = {"▪", "●", "○"};
-    for (auto& line : map) {
-        for (int i = 0; i < 19; ++i) {
-            if (i != 0)
-                std::cout << " ";
-            std::cout << elements[line[i]];
+    std::string elements[] = {".", "X", "O"};
+    std::cout << "   ";
+    for (int i = 0; i < 19; ++i) {
+        std::cout << (i < 10 ? " " : "") << i << " ";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < 19; ++i) {
+        std::cout << (i < 10 ? " " : "") << i << " ";
+        for (int j = 0; j < 19; ++j) {
+            std::cout << " " << elements[map[i][j]] << " ";
         }
         std::cout << std::endl;
     }
 }
 
 void winView(){
-    std::cout << (isWin(cur_cords[0], cur_cords[1]) == 1 ? "黑" : "白") << "方胜利！按任意键返回主菜单......";
+    system(CLEAR_COMMAND);
+    gameView_ShowMap();
+    std::cout << (isWin(cur_cords[0], cur_cords[1]) == 1 ? "Black" : "White") << " wins! Press any key to return to the main menu......";
 }
 
 void gameView(){
@@ -117,13 +157,16 @@ void gameView(){
     while (true){
         system(CLEAR_COMMAND);
         gameView_ShowMap();
-        std::cout << (isWin(cur_cords[0], cur_cords[1]) == 1 ? "黑" : "白") << "方回合！" << std::endl;
-        std::cout << "请输入落子坐标（用空格分割两个坐标分量）：" ;
+        std::cout << (getSide() == 0 ? "Black" : "White") << "\'s turn! " << std::endl;
+        std::cout << "Please enter the coordinates of the drop (split the two coordinate components with a space):" ;
         getCords();
         while (!validCord(cur_cords[0]) ||
                !validCord(cur_cords[1]) ||
-               playerMove(cur_cords[0], cur_cords[1])){
-            std::cout << "落子无效！请输入落子坐标（用空格分割两个坐标分量）：" ;
+               !playerMove(cur_cords[0], cur_cords[1])){
+            system(CLEAR_COMMAND);
+            gameView_ShowMap();
+            std::cout << (getSide() == 0 ? "Black" : "White") << "\'s turn! " << std::endl;
+            std::cout << "The drop is invalid! Please enter the coordinates of the drop (split the two coordinate components with a space):" ;
             getCords();
         }
         if (isWin(cur_cords[0], cur_cords[1])){

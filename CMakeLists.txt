@@ -16,5 +16,9 @@ file(GLOB LIB_SRC
 )
 add_library(TuringInstitute STATIC ${LIB_SRC})
 
+add_executable(gobang examine/main.cpp)
+
+target_link_libraries(gobang TuringInstitute)
+
 # Tests
 add_subdirectory(tests)
