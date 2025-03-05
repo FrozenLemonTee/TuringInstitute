@@ -1,4 +1,3 @@
-# tests/CmakeLists.txt
 include(FetchContent)
 
 set(MIRROR_REPO "https://gitee.com/mirrors/googletest.git")
@@ -11,7 +10,11 @@ set(REPO_PRIORITY_LIST
         ${MIRROR_REPO}
 )
 
+set(GTEST_REPO "")
+set(GTEST_CLONE_DIR "${CMAKE_BINARY_DIR}/googletest-src")
+
 foreach(repo IN LISTS REPO_PRIORITY_LIST)
+    message(STATUS "Trying repository: ${repo}")
     execute_process(
             COMMAND git ls-remote ${repo}
             RESULT_VARIABLE result
@@ -20,9 +23,20 @@ foreach(repo IN LISTS REPO_PRIORITY_LIST)
             TIMEOUT 10
     )
     if(result EQUAL 0)
-        set(GTEST_REPO ${repo})
-        message(STATUS "Using repository: ${repo}")
-        break()
+        execute_process(
+                COMMAND git clone --depth=1 --branch release-1.11.0 ${repo} ${GTEST_CLONE_DIR}
+                RESULT_VARIABLE clone_result
+                OUTPUT_QUIET
+                ERROR_QUIET
+                TIMEOUT 30
+        )
+        if(clone_result EQUAL 0)
+            set(GTEST_REPO ${repo})
+            message(STATUS "Successfully cloned from: ${repo}")
+            break()
+        else()
+            message(WARNING "Failed to clone from: ${repo}, trying next repository...")
+        endif()
     else()
         message(WARNING "Repository unavailable: ${repo}")
     endif()
@@ -34,8 +48,7 @@ endif()
 
 FetchContent_Declare(
         GTest
-        GIT_REPOSITORY ${GTEST_REPO}
-        GIT_TAG        release-1.11.0
+        SOURCE_DIR ${GTEST_CLONE_DIR}
 )
 
 FetchContent_MakeAvailable(GTest)
